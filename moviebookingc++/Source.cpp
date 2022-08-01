@@ -3,6 +3,7 @@
 #include<fstream>
 #include<cstring>
 #include<string>
+#include<iomanip>
 using namespace std;
 struct login {
 	char username[20];
@@ -38,7 +39,13 @@ public:
 void movie::display()
 {
 	
-	cout << "\n\n\t\t"<<movielistcount+1<< moviename << "\t\t\t" << code << "\t\t" << time << "\t\t" << date;
+	int spacecount = 0;
+	int stringcount = 0;
+	stringcount = moviename.length();
+	spacecount = 52 - stringcount-19;
+	cout << endl<<"\t\t"<<movielistcount+1<<". "<<moviename;
+	cout.width(spacecount);
+	cout << code<<"\t\t"<<time<<"\t\t"<<date<<"\t\t"<<price;
 	movielistcount++;
 	
 
@@ -63,6 +70,11 @@ void movie::write()
 
 void movie::readmovielist()
 {
+	system("cls");  //to clear screen for displaing movie list
+	cout << "\t\t=======================================================================================";
+	cout << "\n\t\t\t\t MOVIE TICKET BOOKING \n";
+	cout << "\t\t=======================================================================================";
+	cout << "\n\t\tMOVIES LIST\t\t\t CODE \t\tTIME \t\tDATE \t\tPRICE";
 	ifstream file;
 	file.open("records\\moviedetails.txt", ios::in | ios::binary);
 	if (!file)
