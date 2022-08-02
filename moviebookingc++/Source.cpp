@@ -10,6 +10,7 @@ struct login {
 	char password[20];
 }l;
 int movielistcount;
+int upcommingmovielistcount;
 void login();
 void adminpanel();
 //void movies_list();
@@ -19,16 +20,17 @@ class movie
 	int price;
 	int code;
 	string time;
-	int date;
+	string date;
 public:
 	movie()
 	{
 	
 	}
 	void addmoviedetails();
-	void write();
-	void display();
-	void readmovielist();
+	void write(int index);
+	void display(int index);
+	void readmovielist(int index);
+	void addnewupcommingmovies();
 	~movie()
 	{
 
@@ -36,25 +38,45 @@ public:
 
 };
 
-void movie::display()
+void movie::display(int index)
 {
 	
 	int spacecount = 0;
 	int stringcount = 0;
-	stringcount = moviename.length();
-	spacecount = 52 - stringcount-19;
-	cout << endl<<"\t\t"<<movielistcount+1<<". "<<moviename;
-	cout.width(spacecount);
-	cout << code<<"\t\t"<<time<<"\t\t"<<date<<"\t\t"<<price;
-	movielistcount++;
+	if (index == 1)
+	{
+		stringcount = moviename.length();
+		spacecount = 52 - stringcount - 19;
+		cout << endl << "\t\t" << movielistcount + 1 << ". " << moviename;
+		cout.width(spacecount);
+		cout << code << "\t\t" << time << "\t\t" << date << "\t\t" << price;
+		movielistcount++;
+	}
+	else if (index == 2)
+	{
+		//cout << endl << "\t\t" << upcommingmovielistcount + 1 << ". " << moviename;
+		stringcount = moviename.length();
+		spacecount = 78 - stringcount - 19;
+		cout << endl << "\t\t" << upcommingmovielistcount + 1 << ". " << moviename;
+		cout.width(spacecount);
+		cout << date;
+	}
+	
 	
 
 }
 
-void movie::write()
+void movie::write(int index)
 {
 	ofstream file;
-	file.open("records\\moviedetails.txt", ios::app | ios::out | ios::binary);
+	if (index == 1)
+	{
+		file.open("records\\moviedetails.txt", ios::app | ios::out | ios::binary);
+	}
+	else if (index == 2)
+	{
+		file.open("records\\upcommingmoviedetails.txt", ios::app | ios::out | ios::binary);
+	}
 	if (!file)
 	{
 		cout << "file not opened";
@@ -68,15 +90,30 @@ void movie::write()
 }
 
 
-void movie::readmovielist()
+void movie::readmovielist(int index)
 {
 	system("cls");  //to clear screen for displaing movie list
-	cout << "\t\t=======================================================================================";
-	cout << "\n\t\t\t\t MOVIE TICKET BOOKING \n";
-	cout << "\t\t=======================================================================================";
-	cout << "\n\t\tMOVIES LIST\t\t\t CODE \t\tTIME \t\tDATE \t\tPRICE";
+	
 	ifstream file;
-	file.open("records\\moviedetails.txt", ios::in | ios::binary);
+	if (index == 1)
+	{
+		index = 1;
+		cout << "\t\t=======================================================================================";
+		cout << "\n\t\t\t\t MOVIE TICKET BOOKING \n";
+		cout << "\t\t=======================================================================================";
+		cout << "\n\t\tMOVIES LIST\t\t\t CODE \t\tTIME \t\tDATE \t\tPRICE";
+		file.open("records\\moviedetails.txt", ios::in | ios::binary);
+	}
+	else if (index == 2)
+	{
+		index = 2;
+		cout << "\t\t=======================================================================================";
+		cout << "\n\t\t\t\t MOVIE TICKET BOOKING \n";
+		cout << "\t\t=======================================================================================";
+		cout << "\n\t\tMOVIES LIST\t\t\t\t\tRELSEASING DATE ";
+		file.open("records\\upcommingmoviedetails.txt", ios::in | ios::binary);
+	}
+	
 	if (!file)
 	{
 		cout << "file not opened";
@@ -86,7 +123,7 @@ void movie::readmovielist()
 		file.read((char*)this, sizeof(*this));
 		while (!file.eof())
 		{
-			display();
+			display(index);
 			file.read((char*)this, sizeof(*this));
 		}
 		file.close();
@@ -98,14 +135,13 @@ void movie::readmovielist()
 void movie::addmoviedetails()
 {
 	char ch = 0;
+
 	do 
 	{
 		cout << "Enter the code of the movie: ";
 		cin >> code;
 		fflush(stdin);
-		cout << "Enter tha date of the movie: ";
-		cin >> date;
-		fflush(stdin);
+		
 		cout << "Enter the price of the movie: ";
 		cin >> price;
 		fflush(stdin);
@@ -117,11 +153,41 @@ void movie::addmoviedetails()
 		getline(cin, time);
 		fflush(stdin);
 		
+		cout << "Enter tha date of the movie: ";
+		getline(cin, date);
+		fflush(stdin);
 		
-		write();
+		write(1);
 		cout << "Do you want to add another record? (press y for yes an n for no) : ";
 		cin >> ch;
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		fflush(stdin);
+	} while (ch == 'y' || ch == 'Y');
+}
+
+
+void movie::addnewupcommingmovies()
+{
+	char ch = 0;
+	do
+	{
+		
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cout << "Enter the name of the movie: ";
+		getline(cin, moviename);
+		//cin.sync();
+		
+		//fflush(stdin);
+		cout << "Enter tha releasing date of the movie: ";
+		getline(cin, date);
+		
+		//fflush(stdin);
+		//cin.ignore();
+		write(2);
+		cout << "Do you want to add another record? (press y for yes an n for no) : ";
+		cin >> ch;
+		
+		//fflush(stdin);
 	} while (ch == 'y' || ch == 'Y');
 }
 
@@ -151,18 +217,20 @@ int main()
 		switch (ch)
 		{
 		case 1:
-			object.readmovielist();
+			object.readmovielist(1);
 			printf("\n\n\n\t\tplease enter any key to continue.... ");
 			_getch();
 			break;
-			/*			case 2:
-							book_ticket();
-							free(p);
-							break;
-						case 3:
-							upcomming_movies();
-							break;
-						case 4:
+		//				case 2:
+			//				book_ticket();
+				//			free(p);
+				//			break;
+		case 3:
+			object.readmovielist(2);
+			printf("\n\n\n\t\tplease enter any key to continue.... ");
+			_getch();
+			break;
+	/**					case 4:
 							booking_status();
 							break;
 						case 5:
@@ -195,8 +263,8 @@ void adminpanel()
 		cout << "\t\t\t                 Movie Ticket Booking System\n";
 		cout << "\t\t\t ==================================================================\n";
 		cout << "\t\t\t||             1- ADD MOVIE DETAILS                               ||\n";
-		cout << "\t\t\t||             2- DELETE MOVIE DETAILS                            ||\n";
-		cout << "\t\t\t||             3- ADD NEW UPCOMING MOVIE                          ||\n";
+		cout << "\t\t\t||             2- ADD NEW UPCOMING MOVIE                          ||\n";
+		cout << "\t\t\t||             3- DELETE MOVIE DETAILS                            ||\n";
 		cout << "\t\t\t||             4- Exit system:                                    ||\n";
 		cout << "\t\t\t||================================================================||\n";
 		cout << "\n\n\n\t\t\t\tEnter your choice ";
@@ -206,7 +274,9 @@ void adminpanel()
 			case 1:
 				object.addmoviedetails();
 				break;
-			
+			case 2:
+				object.addnewupcommingmovies();
+				break;
 			
 			case 4:
 				login();
