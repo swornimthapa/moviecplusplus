@@ -14,8 +14,11 @@ int movielistcount=0;
 int upcommingmovielistcount=0;
 void login();
 void adminpanel();
-//void movies_list();
+string customerfile;
 
+int numberofdetailsinfile;
+//void movies_list();
+int seat[50] = { 0 };
 class movie
 {
 	string moviename;
@@ -60,6 +63,8 @@ public:
 
 	}
 	void bookticket();
+	void countnumberofdetails();
+	void hall();
 	~customer()
 	{
 
@@ -70,7 +75,9 @@ public:
 
 void customer::bookticket()
 {
+	ofstream file;
 	char ch;
+	cout << endl << numberofdetailsinfile;
 	do
 	{
 		
@@ -92,12 +99,22 @@ void customer::bookticket()
 		getline(cin, secondname);
 		fflush(stdin);
 
+		file.open(customerfile, ios::app | ios::out | ios::binary);
+		if (!file)
+		{
+			cout << "file not opened";
+		}
+		else
+		{
+			file.write((char*)this, sizeof(*this));
+		}
+		file.close();
 
 		cout << "Do you want to add another record? (press y for yes an n for no) : ";
 		cin >> ch;
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		fflush(stdin);
-	} while (ch == 'y' || ch == 'Y');
+		} while (ch == 'y' || ch == 'Y');
 }
 
 void movie::display(int index)
@@ -167,6 +184,8 @@ void movie::display(char index)
 void movie::displayshowtime(int index)
 {
 	ifstream file;
+	int ch;
+	//customer count;
 	file.open("records\\moviedetails.txt", ios::in | ios::binary);
 	if (!file)
 	{
@@ -177,7 +196,9 @@ void movie::displayshowtime(int index)
 		for (int i = 0; i < index; i++)
 		{
 			file.read((char*)this, sizeof(*this));
+
 		}
+		//moviename ya aaayo
 		system("cls");
 		cout << "\t\t================================================================================================";
 		cout << "\n\t\t\t\t\t\t\t MOVIE TICKET BOOKING \n";
@@ -188,8 +209,62 @@ void movie::displayshowtime(int index)
 		cout << endl << "\t\t2." << date2 << "\t\t\t" << time2;
 		cout << endl << "\t\t3." << date3 << "\t\t\t" << time3;
 		cout << endl << "\t\t4." << date4 << "\t\t\t" << time4;
+		//file.close();
+		label:
+		cout << "\n\t\tENTER YOU APPROPRIATE TIMING : ";
+		cin>> ch;
+		
+		switch (ch)
+		{
+			case 1:
+				customerfile = "records\\" + moviename + date1 + time1 + ".txt";
+				
+				break;
+			case 2:
+				customerfile = "records\\" + moviename + date2 + time2 + ".txt";
+				
+				break;
+			case 3:
+				customerfile = "records\\" + moviename + date3 + time3 + ".txt";
+				
+				break;
+			case 4:
+				customerfile = "records\\" + moviename + date4 + time4 + ".txt";
+				
+				break;
+			default:
+				cout << "\n\n\t\tINVALID INPUT";
+				goto label;
+		}
+		//customerfile = "records\\" + moviename + date1 + time1 + ".txt";
+		file.close();
+
+
+	}
+}
+
+
+
+void customer::countnumberofdetails()
+{
+	ifstream file;
+	file.open(customerfile, ios::in | ios::binary);
+	if (!file)
+	{
+		cout << "file not opened";
+	}
+	else
+	{
+
+		file.read((char*)this, sizeof(*this));
+		while (!file.eof())
+		{
+			file.read((char*)this, sizeof(*this));
+			numberofdetailsinfile++;
+		}
 		file.close();
 	}
+	
 }
 
 
@@ -267,10 +342,11 @@ template <typename T>
 				display(index);
 				file.read((char*)this, sizeof(*this));
 			}
-			cout << endl << "\t\tEnter the code to view the show  timing : ";
+			file.close();
+			cout << endl << "\t\tEnter the SN to view the show  timing : ";
 			cin >> ch;
 			displayshowtime(ch);
-			file.close();
+			
 		}
 	}
 	else if (index == 3)
@@ -305,7 +381,11 @@ template <typename T>
 void movie::addmoviedetails()
 {
 	char ch = 0;
-
+	string filename1;
+	string filename2;
+	string filename3;
+	string filename4;
+	ofstream file;
 	do 
 	{
 		cout << "Enter the code of the movie: ";
@@ -360,6 +440,47 @@ void movie::addmoviedetails()
 		cin >> ch;
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		fflush(stdin);
+		filename1 = "records\\"+moviename + date1 + time1 + ".txt";
+		filename2 = "records\\" + moviename + date2 + time2 + ".txt";
+		filename3 = "records\\" + moviename + date3 + time3 + ".txt";
+		filename4 = "records\\" + moviename + date4 + time4 + ".txt";
+		file.open(filename1, ios::app | ios::out | ios::binary);
+		if (!file)
+		{
+			cout << "file could not be created";
+		}
+		else
+		{
+			file.close();
+		}
+		file.open(filename2, ios::app | ios::out | ios::binary);
+		if (!file)
+		{
+			cout << "file could not be created";
+		}
+		else
+		{
+			file.close();
+		}
+		file.open(filename3, ios::app | ios::out | ios::binary);
+		if (!file)
+		{
+			cout << "file could not be created";
+		}
+		else
+		{
+			file.close();
+		}
+		file.open(filename4, ios::app | ios::out | ios::binary);
+		if (!file)
+		{
+			cout << "file could not be created";
+		}
+		else
+		{
+			file.close();
+		}
+
 	} while (ch == 'y' || ch == 'Y');
 }
 
@@ -385,6 +506,66 @@ void movie::addnewupcommingmovies()
 		
 		//fflush(stdin);
 	} while (ch == 'y' || ch == 'Y');
+}
+
+
+
+void customer::hall()
+{
+	int seatcount = 0;
+    int count1 = 0;
+	count1 = numberofdetailsinfile;
+	string name[50];
+	string h[51] = {"EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY"};
+	int i = 0, j = 0, index = 1;
+
+	ifstream file;
+	file.open(customerfile, ios::in | ios::binary);
+	if (!file)
+	{
+		cout << "file not opened";
+	}
+	else
+	{
+
+		file.read((char*)this, sizeof(*this));
+		while (!file.eof())
+		{
+
+			seat[j] = this->seatnumber;
+			name[j]=this->firstname;
+			j++;
+			file.read((char*)this, sizeof(*this));
+			
+		}
+		file.close();
+	}
+
+
+
+
+	system("cls");
+	cout<<"      ________________________________________________________________________________________________________________________________________________________________ \n ";
+	cout << "    /                                                                    SCREEN                                                                                      \\\n";
+	cout << "    /__________________________________________________________________________________________________________________________________________________________________\\\n\n\n\n ";
+	j = 0;
+	for (i = 0; i < count1; i++)
+	{
+		h[seat[i]]= name[i];
+	}
+	for (i = 0; i < 5; i++)
+	{
+
+		for (j = 0; j < 10; j++)
+		{
+			cout <<"\t" <<"0"<< index + j << ". " << h[j + index];
+		}
+		index = index + 10;
+		cout <<endl;
+	}
+	//printf("\n\t\t\t\t\t\t\t\t\t\t\tAVAILABLE SEAT: %d", 50 - count1);
+	//printf("\n\t\t\t\t\t\t\t\t\t\t\tOCCUPIED SEAT: %d", count1);
+
 }
 
 
@@ -421,6 +602,8 @@ int main()
 			break;
 		case 2:
 			object.readmovielist<char>('b');
+			object1.countnumberofdetails();
+			object1.hall();
 			object1.bookticket();
 				cout << "\n\n\n\t\tplease enter any key to continue.... ";
 				_getch();
