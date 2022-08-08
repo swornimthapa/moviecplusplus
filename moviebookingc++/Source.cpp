@@ -75,18 +75,42 @@ public:
 
 void customer::bookticket()
 {
-	ofstream file;
+//	customer object2;
+	fstream file;
 	char ch;
-	cout << endl << numberofdetailsinfile;
+	//cout << endl << numberofdetailsinfile;
 	do
 	{
-		
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+//		file.open(customerfile, ios::in | ios::binary);
+//		if (!file)
+//		{
+	//		cout << "file not opened";
+	//		exit(0);
+	//		_getch();
+	//	}
+//
 		cout << "\n\tENTER THE PHONE NUMBER OF PERSON:";
 		cin >> number;
 		fflush(stdin);
-		
+		label1:
 		cout << "\n\tENTER THE SEAT NUMBER:";
 		cin >> seatnumber;
+	//	file.read((char*)&object2, sizeof(object2));
+	//		while (!file.eof())
+	//		{
+	//			if (object2.seatnumber == this->seatnumber)
+	//			{
+	//			cout << "\n\tSEAT ALREADY TAKEN";
+	//			goto label1;
+	//			}
+	//			file.read((char*)&object2, sizeof(object2));
+
+	//		}
+	
+	//	file.close();
+
+
 		fflush(stdin);
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		
@@ -113,8 +137,10 @@ void customer::bookticket()
 		cout << "Do you want to add another record? (press y for yes an n for no) : ";
 		cin >> ch;
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		fflush(stdin);
-		} while (ch == 'y' || ch == 'Y');
+		//fflush(stdin);
+	} while (ch == 'y' || ch == 'Y');
+	//cout << "datgasdfasdf";
+	//	_getch();
 }
 
 void movie::display(int index)
@@ -247,6 +273,7 @@ void movie::displayshowtime(int index)
 
 void customer::countnumberofdetails()
 {
+	numberofdetailsinfile = 0;
 	ifstream file;
 	file.open(customerfile, ios::in | ios::binary);
 	if (!file)
@@ -563,8 +590,8 @@ void customer::hall()
 		index = index + 10;
 		cout <<endl;
 	}
-	//printf("\n\t\t\t\t\t\t\t\t\t\t\tAVAILABLE SEAT: %d", 50 - count1);
-	//printf("\n\t\t\t\t\t\t\t\t\t\t\tOCCUPIED SEAT: %d", count1);
+	cout<<"\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAVAILABLE SEAT:"<< 50 - count1;
+	cout<<"\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tOCCUPIED SEAT:"<<count1;
 
 }
 
@@ -605,22 +632,28 @@ int main()
 			object1.countnumberofdetails();
 			object1.hall();
 			object1.bookticket();
-				cout << "\n\n\n\t\tplease enter any key to continue.... ";
-				_getch();
-				break;
+			//cin.ignore();
+			_getch();
+			cout << "\n\n\n\t\tplease enter any key to continue.... ";
+			_getch();
+			break;
 		case 3:
 			object.readmovielist(3);
 			cout<<"\n\n\n\t\tplease enter any key to continue.... ";
 			_getch();
 			break;
-	/**					case 4:
-							booking_status();
-							break;
-						case 5:
-							cancel();
-							printf("\n\n\n\t\tplease enter any key to continue.... ");
-							getch();
-							break; */
+		case 4:
+			object.readmovielist<char>('b');
+			object1.countnumberofdetails();
+			object1.hall();
+			cout << "\n\n\n\t\t please enter any key to continue.... ";
+			_getch();
+			break;
+	//	case 5:
+	//		cancel();
+//			printf("\n\n\n\t\tplease enter any key to continue.... ");
+	//		getch();
+		//	break; */
 		case 6:
 			exit(0);
 			break;
@@ -774,9 +807,10 @@ flag5:
 						cout << "\n\tSORRY!!..you have entered wrong username and password for 2 times!!";
 						exit(0);
 					}
+					file.close();
 					goto again;
 				}
-				file.close();
+				
 			}
 			//_getch();
 			break;
