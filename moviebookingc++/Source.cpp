@@ -4,6 +4,8 @@
 #include<cstring>
 #include<string>
 #include<iomanip>
+#include<ios>
+#include<limits>
 using namespace std;
 
 struct login {
@@ -51,6 +53,7 @@ public:
 	void readmovielist(T index);
 	void addnewupcommingmovies();
 	void deletemoviedetails();
+	void deleteupcommingmoviedetails();
 	~movie()
 	{
 
@@ -206,6 +209,7 @@ void movie::display(int index)
 		cout << endl << "\t\t" << upcommingmovielistcount + 1 << ". " << moviename;
 		cout.width(spacecount);
 		cout << date1;
+		cout << "\t\t " << code;
 		upcommingmovielistcount++;
 	}
 }
@@ -434,7 +438,7 @@ template <typename T>
 		cout << "\t\t=======================================================================================";
 		cout << "\n\t\t\t\t MOVIE TICKET BOOKING \n";
 		cout << "\t\t=======================================================================================";
-		cout << "\n\t\tMOVIES LIST\t\t\t\t\tRELSEASING DATE ";
+		cout << "\n\t\tMOVIES LIST\t\t\t\t\tRELSEASING DATE\t\tCODE ";
 		file.open("records\\upcommingmoviedetails.txt", ios::in | ios::binary);
 		if (!file)
 		{
@@ -569,17 +573,20 @@ void movie::addnewupcommingmovies()
 	char ch = 0;
 	do
 	{
-		
+		cout << endl;
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		cout << "Enter the name of the movie: ";
 		getline(cin, moviename);
 		//cin.sync();
 		//fflush(stdin);
-		cout << "Enter tha releasing date of the movie: ";
+		cout << "Enter the releasing date of the movie: ";
 		getline(cin, date1);
 		//fflush(stdin);
 		//cin.ignore();
+		cout << "Enter the code of the movie: ";
+		cin >> code;
 		write(2);
+		cout << endl;
 		cout << "Do you want to add another record? (press y for yes an n for no) : ";
 		cin >> ch;
 		
@@ -804,7 +811,8 @@ void adminpanel()
 		cout << "\t\t\t||             1- ADD MOVIE DETAILS                               ||\n";
 		cout << "\t\t\t||             2- ADD NEW UPCOMING MOVIE                          ||\n";
 		cout << "\t\t\t||             3- DELETE MOVIE DETAILS                            ||\n";
-		cout << "\t\t\t||             4- Exit system:                                    ||\n";
+		cout << "\t\t\t||             4- DELETE UPCOMMMING MOVIE DETAILS                 ||\n";
+		cout << "\t\t\t||             5- EXIT SYSTEM                                     ||\n";
 		cout << "\t\t\t||================================================================||\n";
 		cout << "\n\n\n\t\t\t\tEnter your choice ";
 		cin >> ch;
@@ -819,7 +827,14 @@ void adminpanel()
 			case 3:
 				object.readmovielist<int>(1);
 				object.deletemoviedetails();
+				break;
 			case 4:
+				object.readmovielist(3);
+				object.deleteupcommingmoviedetails();
+				cout << "\n\n\n\t\tplease enter any key to continue.... ";
+				_getch();
+				break;
+			case 5:
 				login();
 				break;
 			default:
@@ -830,12 +845,76 @@ void adminpanel()
 		}
 	} while (1);
 }
+
+void movie::deleteupcommingmoviedetails()
+{
+	int moviecode = 0;
+	cout << "\n\t\tEnter the code to delete the movie : ";
+	cin >> moviecode;
+	fstream file;			//opens the upcomming movie details file
+	fstream file1;		///opens the delete file
+	file.open("records\\upcommingmoviedetails.txt", ios::in | ios::binary);
+	if (!file)
+	{
+		cout << "1file not opened";
+		exit(0);
+
+	}
+	else
+	{
+		file1.open("records\\delete.txt", ios::trunc | ios::out | ios::binary);
+		if (!file1)
+		{
+			cout << "file not opened";
+			exit(0);
+		}
+
+		file.read((char*)this, sizeof(*this));
+		while (!file.eof())
+		{
+			if (moviecode != code)
+			{
+
+				file1.write((char*)this, sizeof(*this));
+			}
+			file.read((char*)this, sizeof(*this));
+		}
+	}
+	file.close();
+	file1.close();
+	file1.open("records\\delete.txt", ios::in | ios::binary);	
+	if (!file1)
+	{
+		cout << "1file not opened";
+		exit(0);
+
+	}
+	else
+	{
+		file.open("records\\upcommingmoviedetails.txt", ios::trunc | ios::out | ios::binary);   
+		if (!file)
+		{
+			cout << "1file not opened";
+			exit(0);
+
+		}
+		file1.read((char*)this, sizeof(*this));
+		while (!file1.eof())
+		{
+			file.write((char*)this, sizeof(*this));
+			file1.read((char*)this, sizeof(*this));
+		}
+	}
+	file.close();
+	file1.close();
+}
+
 void movie::deletemoviedetails()
 {
 	int moviecode = 0;
 	cout << "\n\t\tEnter the code to delete the movie : ";
 	cin >> moviecode;
-	fstream file;			//opens the customer details file
+	fstream file;			//opens the movie details file
 	fstream file1;		///opens the delete file
 	file.open("records\\moviedetails.txt", ios::in | ios::binary);
 	if (!file)
