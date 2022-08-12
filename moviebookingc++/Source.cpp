@@ -1,4 +1,4 @@
-#include<iostream>
+﻿#include<iostream>
 #include<conio.h>
 #include<fstream>
 #include<cstring>
@@ -12,12 +12,17 @@ struct login {
 }l;
 int movielistcount=0;
 int upcommingmovielistcount=0;
+int numberofticket = 0;
+int ticketprice = 0;
 void login();
 void adminpanel();
+string ticketmovie;
+string ticketdate;
+string tickettime;
 string customerfile;
 
 int numberofdetailsinfile;
-//void movies_list();
+
 int seat[50] = { 0 };
 class movie
 {
@@ -55,7 +60,7 @@ class customer
 {
 	string firstname;
 	string secondname;
-	double number;
+	unsigned int number;
 	int seatnumber;
 public:
 	customer()
@@ -65,6 +70,8 @@ public:
 	void bookticket();
 	void countnumberofdetails();
 	void hall();
+	void filetodelete();
+	void deletetofile();
 	~customer()
 	{
 
@@ -73,43 +80,50 @@ public:
 
 };
 
+
+
+
 void customer::bookticket()
 {
-//	customer object2;
-	fstream file;
+	customer object2;
+	fstream file1;
 	char ch;
+	numberofticket = 0;
 	//cout << endl << numberofdetailsinfile;
 	do
 	{
+		numberofticket++;
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-//		file.open(customerfile, ios::in | ios::binary);
-//		if (!file)
-//		{
-	//		cout << "file not opened";
-	//		exit(0);
-	//		_getch();
-	//	}
-//
+	/*	file1.open(customerfile, ios::in | ios::binary);
+		if (!file1)
+		{
+			cout << "file not opened";
+			exit(0);
+			_getch();
+		}*/
+
 		cout << "\n\tENTER THE PHONE NUMBER OF PERSON:";
 		cin >> number;
 		fflush(stdin);
 		label1:
 		cout << "\n\tENTER THE SEAT NUMBER:";
 		cin >> seatnumber;
-	//	file.read((char*)&object2, sizeof(object2));
-	//		while (!file.eof())
-	//		{
-	//			if (object2.seatnumber == this->seatnumber)
-	//			{
-	//			cout << "\n\tSEAT ALREADY TAKEN";
-	//			goto label1;
-	//			}
-	//			file.read((char*)&object2, sizeof(object2));
-
-	//		}
 	
-	//	file.close();
+	/*	file1.read((char*)&object2, sizeof(object2));
+			while (!file1.eof())
+			{
+				if (object2.seatnumber == seatnumber)
+				{
+				cout << "\n\tSEAT ALREADY TAKEN";
+				goto label1;
+				}
+				
+				file1.read((char*)&object2, sizeof(object2));
 
+			}
+	
+		file1.close();
+		*/
 
 		fflush(stdin);
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -123,25 +137,48 @@ void customer::bookticket()
 		getline(cin, secondname);
 		fflush(stdin);
 
-		file.open(customerfile, ios::app | ios::out | ios::binary);
-		if (!file)
+		file1.open(customerfile, ios::app | ios::out | ios::binary);
+		if (!file1)
 		{
 			cout << "file not opened";
 		}
 		else
 		{
-			file.write((char*)this, sizeof(*this));
+			file1.write((char*)this, sizeof(*this));
 		}
-		file.close();
+		file1.close();
 
-		cout << "Do you want to add another record? (press y for yes an n for no) : ";
+	
+	//	cout << endl << "\t\t" << "::    :: ::::::: ::   :: :::::: :::::: : ::::::::                ";
+	//	cout << endl << "\t\t" << ":::..::: ::   :: ::   ::   ::   ::            ::                 ";
+	//	cout << endl << "\t\t" << ":: .. :: ::   :: ::   ::   ::   :::::::       ::                 ";
+	//	cout << endl << "\t\t" << "::    :: ::   :: ::   ::   ::   ::                               ";
+	//	cout << endl << "\t\t" << "::	 :: :::::::   :::   :::::: :::::::                          ";
+ 
+
+
+		cout << endl << endl << "\t\tPLEASE SCREEMSHOT YOUR TICKET";
+		cout << endl << "\t\t--------------------------------------------------";
+		cout << endl << "\t\tTICKET FOR " << ticketmovie;
+		cout << endl << "\t\t|" << "NAME=" << firstname << " " << secondname;
+		cout << endl << "\t\t|" << "NUMBER=" << number;
+		cout << endl << "\t\t|" << "SEATNUMBER =" << seatnumber;
+		cout << endl << "\t\t|" << "price" << ticketprice;
+		cout << endl << "\t\t--------------------------------------------------";
+
+
+
+
+		cout << endl<<"Do you want to add another record? (press y for yes an n for no) : ";
 		cin >> ch;
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		//fflush(stdin);
 	} while (ch == 'y' || ch == 'Y');
-	//cout << "datgasdfasdf";
-	//	_getch();
+	
 }
+
+
+
 
 void movie::display(int index)
 {
@@ -176,6 +213,7 @@ void movie::display(int index)
 void movie::display(char index)
 {
 	//char ch;
+	ticketprice = 0;
 	int spacecount = 0;
 	int stringcount = 0;
 	stringcount = moviename.length();
@@ -183,6 +221,7 @@ void movie::display(char index)
 	cout << endl << "\t\t" << movielistcount + 1 << ". " << moviename;
 	cout.width(spacecount);
 	cout << code << "\t\t\t\t" << price;
+	//ticketprice = price;
 	//spacecount = 7;
 	//cout.width(spacecount);
 	//cout << "\t" << date1 << "," << date2 << "," << date3 << "," << date4;
@@ -211,6 +250,7 @@ void movie::displayshowtime(int index)
 {
 	ifstream file;
 	int ch;
+	//ticketprice = 0;
 	//customer count;
 	file.open("records\\moviedetails.txt", ios::in | ios::binary);
 	if (!file)
@@ -244,19 +284,31 @@ void movie::displayshowtime(int index)
 		{
 			case 1:
 				customerfile = "records\\" + moviename + date1 + time1 + ".txt";
-				
+				ticketmovie = moviename;
+				ticketdate = date1;
+				tickettime = time1;
+				ticketprice = price;
 				break;
 			case 2:
 				customerfile = "records\\" + moviename + date2 + time2 + ".txt";
-				
+				ticketmovie = moviename;
+				ticketdate = date1;
+				tickettime = time1;
+				ticketprice = price;
 				break;
 			case 3:
 				customerfile = "records\\" + moviename + date3 + time3 + ".txt";
-				
+				ticketmovie = moviename;
+				ticketdate = date1;
+				tickettime = time1;
+				ticketprice = price;
 				break;
 			case 4:
 				customerfile = "records\\" + moviename + date4 + time4 + ".txt";
-				
+				ticketmovie = moviename;
+				ticketdate = date1;
+				tickettime = time1;
+				ticketprice = price;
 				break;
 			default:
 				cout << "\n\n\t\tINVALID INPUT";
@@ -544,7 +596,7 @@ void customer::hall()
 	count1 = numberofdetailsinfile;
 	string name[50];
 	string h[51] = {"EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY","EMPTY"};
-	int i = 0, j = 0, index = 1;
+	int i = 0, j = 0, index1 = 1;
 
 	ifstream file;
 	file.open(customerfile, ios::in | ios::binary);
@@ -559,8 +611,8 @@ void customer::hall()
 		while (!file.eof())
 		{
 
-			seat[j] = this->seatnumber;
-			name[j]=this->firstname;
+			seat[j] = seatnumber;
+			name[j]=firstname;
 			j++;
 			file.read((char*)this, sizeof(*this));
 			
@@ -585,14 +637,14 @@ void customer::hall()
 
 		for (j = 0; j < 10; j++)
 		{
-			cout <<"\t" <<"0"<< index + j << ". " << h[j + index];
+			cout <<"\t" <<"0"<< index1 + j << ". " << h[j + index1];
 		}
-		index = index + 10;
+		index1 = index1 + 10;
 		cout <<endl;
 	}
 	cout<<"\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAVAILABLE SEAT:"<< 50 - count1;
 	cout<<"\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tOCCUPIED SEAT:"<<count1;
-
+	//bookticket();
 }
 
 
@@ -649,11 +701,14 @@ int main()
 			cout << "\n\n\n\t\t please enter any key to continue.... ";
 			_getch();
 			break;
-	//	case 5:
-	//		cancel();
-//			printf("\n\n\n\t\tplease enter any key to continue.... ");
-	//		getch();
-		//	break; */
+		case 5:
+			object.readmovielist<char>('b');
+			object1.countnumberofdetails();
+			object1.hall();
+			object1.filetodelete();
+			printf("\n\n\n\t\tplease enter any key to continue.... ");
+			_getch();
+			break; 
 		case 6:
 			exit(0);
 			break;
@@ -667,6 +722,72 @@ int main()
 	//free(p);    
 	return 0;
 }
+
+
+void customer::filetodelete()
+{
+	int seat = 0;
+	cout << "\n\tPLEASE NOTE : 50 PERCENT AMOUNT WILL BE DEDUCTED AS A CANCELLATION CHARGE";
+	cout << "\n\t\tEnter the seat number to cancel the ticket : ";
+	cin >> seat;
+	fstream file;			//opens the customer details file
+	fstream file1;		///opens the delete file
+	file.open(customerfile, ios::in | ios::binary);
+	if (!file)
+	{
+		cout << "1file not opened";
+		exit(0);
+		
+	}
+	else
+	{
+		file1.open("records\\delete.txt", ios::trunc | ios::out | ios::binary);
+		if (!file1)
+		{
+			cout << "file not opened";
+			exit(0);
+		}
+		
+		file.read((char*)this, sizeof(*this));
+		while (!file.eof())
+		{
+			if (seat != seatnumber)
+			{
+				
+				file1.write((char*)this, sizeof(*this));
+			}
+			file.read((char*)this, sizeof(*this));
+		}
+	}
+	file.close();
+	file1.close();
+	file1.open("records\\delete.txt", ios::in | ios::binary);	//opens delete file to read
+	if (!file1)
+	{
+		cout << "1file not opened";
+		exit(0);
+
+	}
+	else
+	{
+		file.open(customerfile, ios::trunc | ios::out | ios::binary);   //opens customer details file to write
+		if (!file)
+		{
+			cout << "1file not opened";
+			exit(0);
+
+		}
+		file1.read((char*)this, sizeof(*this));
+		while (!file1.eof())
+		{
+			file.write((char*)this, sizeof(*this));
+			file1.read((char*)this, sizeof(*this));
+		}
+	}
+
+}
+
+
 
 void adminpanel()
 {
@@ -822,5 +943,6 @@ flag5:
 			goto flag5;
 
 	}
+	
 	
 }

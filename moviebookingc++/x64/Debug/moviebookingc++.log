@@ -1,1 +1,7 @@
-﻿  moviebookingc++.vcxproj -> C:\Users\Lenovo\Desktop\moviebookingc++\x64\Debug\moviebookingc++.exe
+﻿  Source.cpp
+C:\Users\Lenovo\Desktop\moviebookingc++\moviebookingc++\Source.cpp(108,9): warning C4102: 'label1': unreferenced label
+C:\Users\Lenovo\Desktop\moviebookingc++\moviebookingc++\Source.cpp(190,35): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Lenovo\Desktop\moviebookingc++\moviebookingc++\Source.cpp(204,35): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Lenovo\Desktop\moviebookingc++\moviebookingc++\Source.cpp(219,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Lenovo\Desktop\moviebookingc++\moviebookingc++\Source.cpp(678,12): warning C4129: ' ': unrecognized character escape sequence
+  moviebookingc++.vcxproj -> C:\Users\Lenovo\Desktop\moviebookingc++\x64\Debug\moviebookingc++.exe
