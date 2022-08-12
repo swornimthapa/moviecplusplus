@@ -50,6 +50,7 @@ public:
 	template <typename T>
 	void readmovielist(T index);
 	void addnewupcommingmovies();
+	void deletemoviedetails();
 	~movie()
 	{
 
@@ -70,8 +71,7 @@ public:
 	void bookticket();
 	void countnumberofdetails();
 	void hall();
-	void filetodelete();
-	void deletetofile();
+	void filetodelete();  //cancel ticket
 	~customer()
 	{
 
@@ -784,6 +784,8 @@ void customer::filetodelete()
 			file1.read((char*)this, sizeof(*this));
 		}
 	}
+	file.close();
+	file1.close();
 
 }
 
@@ -814,7 +816,9 @@ void adminpanel()
 			case 2:
 				object.addnewupcommingmovies();
 				break;
-			
+			case 3:
+				object.readmovielist<int>(1);
+				object.deletemoviedetails();
 			case 4:
 				login();
 				break;
@@ -826,7 +830,69 @@ void adminpanel()
 		}
 	} while (1);
 }
+void movie::deletemoviedetails()
+{
+	int moviecode = 0;
+	cout << "\n\t\tEnter the code to delete the movie : ";
+	cin >> moviecode;
+	fstream file;			//opens the customer details file
+	fstream file1;		///opens the delete file
+	file.open("records\\moviedetails.txt", ios::in | ios::binary);
+	if (!file)
+	{
+		cout << "1file not opened";
+		exit(0);
 
+	}
+	else
+	{
+		file1.open("records\\delete.txt", ios::trunc | ios::out | ios::binary);
+		if (!file1)
+		{
+			cout << "file not opened";
+			exit(0);
+		}
+
+		file.read((char*)this, sizeof(*this));
+		while (!file.eof())
+		{
+			if (moviecode != code)
+			{
+
+				file1.write((char*)this, sizeof(*this));
+			}
+			file.read((char*)this, sizeof(*this));
+		}
+	}
+	file.close();
+	file1.close();
+	file1.open("records\\delete.txt", ios::in | ios::binary);	//opens delete file to read
+	if (!file1)
+	{
+		cout << "1file not opened";
+		exit(0);
+
+	}
+	else
+	{
+		file.open("records\\moviedetails.txt", ios::trunc | ios::out | ios::binary);   //opens customer details file to write
+		if (!file)
+		{
+			cout << "1file not opened";
+			exit(0);
+
+		}
+		file1.read((char*)this, sizeof(*this));
+		while (!file1.eof())
+		{
+			file.write((char*)this, sizeof(*this));
+			file1.read((char*)this, sizeof(*this));
+		}
+	}
+	file.close();
+	file1.close();
+
+}
 
 
 void login()
