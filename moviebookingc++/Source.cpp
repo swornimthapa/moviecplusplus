@@ -64,7 +64,7 @@ class customer
 {
 	string firstname;
 	string secondname;
-	unsigned int number;
+	long long int number;
 	int seatnumber;
 public:
 	customer()
@@ -108,7 +108,8 @@ void customer::bookticket()
 		cout << "\n\tENTER THE PHONE NUMBER OF PERSON:";
 		cin >> number;
 		fflush(stdin);
-		label1:
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		//label1:
 		cout << "\n\tENTER THE SEAT NUMBER:";
 		cin >> seatnumber;
 	
@@ -161,13 +162,17 @@ void customer::bookticket()
 
 
 		cout << endl << endl << "\t\tPLEASE SCREEMSHOT YOUR TICKET";
-		cout << endl << "\t\t--------------------------------------------------";
-		cout << endl << "\t\tTICKET FOR " << ticketmovie;
+		cout << endl << "\t\t---------------------------------------------------------";
+		cout << endl << "\t\t|\tKIST COLLEGE CINEMAS " ;
+		cout << endl << "\t\t|";
 		cout << endl << "\t\t|" << "NAME=" << firstname << " " << secondname;
+		cout << "\t\t\tMOVIE=" << ticketmovie;
 		cout << endl << "\t\t|" << "NUMBER=" << number;
+		cout << "\t\t\tMOVIE TIME=" << tickettime;
 		cout << endl << "\t\t|" << "SEATNUMBER =" << seatnumber;
-		cout << endl << "\t\t|" << "price" << ticketprice;
-		cout << endl << "\t\t--------------------------------------------------";
+		cout << "\t\t\t\tMOVIE DATE=" << ticketdate;
+		cout << endl << "\t\t|" << "price=" << ticketprice;
+		cout << endl << "\t\t----------------------------------------------------------";
 
 
 
@@ -835,7 +840,7 @@ void adminpanel()
 				_getch();
 				break;
 			case 5:
-				login();
+				exit(0);
 				break;
 			default:
 				cout << "\n\tInvalid input";
